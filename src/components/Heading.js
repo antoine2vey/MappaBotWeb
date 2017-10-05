@@ -10,6 +10,7 @@ const Title = styled.h1`
   text-transform: uppercase;
   text-shadow: 1px 4px #93f9b9;
   margin: 0 0 25px 0;
+  text-align: center;
 `;
 
 const Heading = ({ name }) => (

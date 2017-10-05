@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
+// eslint-disable-next-line
+//import WebSocket from 'ws';
 import Heading from './Heading';
 import Button from './Button';
 import Footer from './Footer';
@@ -18,16 +20,27 @@ const Layout = styled.div`
   flex-direction: column;
 `;
 
-const App = () => (
-  <div>
-    <Layout>
-      <Heading name="mappa bot" />
-      <Button link="https://discordapp.com/api/oauth2/authorize?client_id=336909405981376524&scope=bot&permissions=0">
-        Installer sur ton serveur Discord !
-      </Button>
-      <Footer />
-    </Layout>
-  </div>
-);
+const ws = new WebSocket('ws://localhost:8080');
+class App extends Component {
+  componentDidMount() {
+    ws.onmessage = ({ data }) => {
+      console.log(data);
+    };
+  }
+
+  render() {
+    return (
+      <div>
+        <Layout>
+          <Heading name="mappa bot" />
+          <Button link="https://discordapp.com/api/oauth2/authorize?client_id=336909405981376524&scope=bot&permissions=0">
+            Installer sur ton serveur Discord !
+          </Button>
+          <Footer />
+        </Layout>
+      </div>
+    );
+  }
+}
 
 export default App;

@@ -1,0 +1,7 @@
+{
+    "extends": "airbnb",
+    "rules": {
+        "no-return-await": "off",
+        "react/jsx-filename-extension": "off"  
+    }
+}
