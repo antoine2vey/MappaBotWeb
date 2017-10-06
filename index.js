@@ -10,7 +10,12 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 const wssData = data => JSON.stringify(data);
 
-// Broadcast
+const seconds = 10;
+const interval = seconds * 1000;
+
+/**
+ * Broadcast helper to send data to all connected clients
+ */
 wss.broadcast = (data) => {
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
@@ -21,19 +26,37 @@ wss.broadcast = (data) => {
 
 initConfig();
 
+/**
+ * On connection by client
+ */
 wss.on('connection', async (ws) => {
   const data = await getUsers();
 
+  /**
+   * Send data to this client to init front UI
+   */
   ws.send(wssData(data));
 });
 
-(async () => {
-  const data = await getUsers();
-
-  wss.broadcast(wssData(data));
-  setInterval(() => {
+/**
+ * Fetch all users at start of app
+ */
+getUsers()
+  .then((data) => {
+    /**
+     * Instantly broadcast it to all users
+     */
     wss.broadcast(wssData(data));
-  }, 30 * 1000);
-})();
+
+    /**
+     * Every `ìnterval`, we send stringified data to all clients
+     */
+    setInterval(() => {
+      wss.broadcast(wssData(data));
+    }, interval);
+  })
+  .catch((err) => {
+    console.error('Error at polling', err);
+  });
 
 server.listen(port, () => console.log(`Server start at port ${port}`));
