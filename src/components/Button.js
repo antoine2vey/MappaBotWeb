@@ -1,6 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
+const Button = ({ link, children }) => (
+  <div>
+    <Link href={link}>{children}</Link>
+  </div>
+);
+
 const Link = styled.a`
   color: #1d976c;
   padding: 8px 16px;
@@ -19,11 +25,5 @@ const Link = styled.a`
     box-shadow: 1px 4px 3px #1d976c;
   }
 `;
-
-const Button = ({ link, children }) => (
-  <div>
-    <Link href={link}>{children}</Link>
-  </div>
-);
 
 export default Button;

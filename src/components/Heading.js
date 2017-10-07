@@ -1,6 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
+const Heading = ({ name }) => (
+  <div>
+    <Title>{name}</Title>
+  </div>
+);
+
 const Title = styled.h1`
   color: white;
   font-family: 'Oswald', sans-serif;
@@ -12,13 +18,5 @@ const Title = styled.h1`
   margin: 0 0 25px 0;
   text-align: center;
 `;
-
-const Heading = ({ name }) => (
-  <div>
-    <Title>
-      {name}
-    </Title>
-  </div>
-);
 
 export default Heading;
