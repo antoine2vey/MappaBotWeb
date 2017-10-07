@@ -2,6 +2,8 @@
     "extends": "airbnb",
     "rules": {
         "no-return-await": "off",
-        "react/jsx-filename-extension": "off"  
+        "react/jsx-filename-extension": "off",
+        "react/prop-types": "off",
+        "no-underscore-dangle": "off"
     }
 }

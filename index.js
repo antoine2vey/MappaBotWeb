@@ -1,39 +1,48 @@
-const express = require('express');
+const https = require('https');
 const http = require('http');
-const WebSocket = require('ws');
+const fs = require('fs');
 const { initConfig } = require('./server/config');
 const { getUsers } = require('./server/database');
 
-const port = process.env.PORT || 8080;
-const app = express();
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
-const wssData = data => JSON.stringify(data);
-
-// Broadcast
-wss.broadcast = (data) => {
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(data);
-    }
-  });
-};
 
 initConfig();
+const isDev = process.env.NODE_ENV === 'development';
+const seconds = 5;
+const interval = seconds * 1000;
 
-wss.on('connection', async (ws) => {
+const cert = fs.readFileSync(process.env.CERT || `${__dirname}/fixtures/cert.pem`, 'utf-8');
+const key = fs.readFileSync(process.env.KEY || `${__dirname}/fixtures/key.pem`, 'utf-8');
+
+const server = isDev
+  ? http.createServer()
+  : https.createServer({ key, cert, rejectUnauthorized: false });
+
+const io = require('socket.io').listen(server);
+
+/**
+ * On connection by client
+ */
+io.on('connection', async (socket) => {
   const data = await getUsers();
 
-  ws.send(wssData(data));
+  socket.emit('leaderboard', data);
 });
 
-(async () => {
-  const data = await getUsers();
+/**
+ * Every `ìnterval`, we send stringified data to all clients
+ */
+setInterval(() => {
+  getUsers()
+    .then((data) => {
+      /**
+       * Instantly broadcast it to all users
+       */
+      io.sockets.emit('leaderboard', data);
+    })
+    .catch((err) => {
+      console.error('Error at polling', err);
+    });
+}, interval);
 
-  wss.broadcast(wssData(data));
-  setInterval(() => {
-    wss.broadcast(wssData(data));
-  }, 30 * 1000);
-})();
-
-server.listen(port, () => console.log(`Server start at port ${port}`));
+server.listen(8080);
+console.log('Websocket server is alive');
