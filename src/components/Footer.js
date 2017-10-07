@@ -3,36 +3,6 @@ import styled from 'styled-components';
 import github from '../assets/github.svg';
 import twitter from '../assets/twitter.svg';
 
-const Item = styled.li`margin-right: 15px;`;
-const Icon = styled.img`width: 20px;`;
-
-const FooterContainer = styled.footer`
-  position: absolute;
-  left: 15px;
-  bottom: 15px;
-`;
-
-const List = styled.ul`
-  margin: 0;
-  list-style: none;
-  padding: 0;
-  color: #fff;
-
-  display: flex;
-`;
-
-
-const Link = styled.a`
-  color: #fff;
-  transition: transform 0.2s ease;
-  transform: translateY(0);
-  display: inline-block;
-
-  &:hover {
-    transform: translateY(-3px);
-  }
-`;
-
 const Footer = () => (
   <FooterContainer>
     <List>
@@ -52,5 +22,34 @@ const Footer = () => (
     </List>
   </FooterContainer>
 );
+
+const Item = styled.li`margin-right: 15px;`;
+const Icon = styled.img`width: 20px;`;
+
+const FooterContainer = styled.footer`
+  position: absolute;
+  left: 15px;
+  bottom: 15px;
+`;
+
+const List = styled.ul`
+  margin: 0;
+  list-style: none;
+  padding: 0;
+  color: #fff;
+
+  display: flex;
+`;
+
+const Link = styled.a`
+  color: #fff;
+  transition: transform 0.2s ease;
+  transform: translateY(0);
+  display: inline-block;
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+`;
 
 export default Footer;
