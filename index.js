@@ -1,62 +1,48 @@
-const express = require('express');
+const https = require('https');
 const http = require('http');
-const WebSocket = require('ws');
+const fs = require('fs');
 const { initConfig } = require('./server/config');
 const { getUsers } = require('./server/database');
 
-const port = process.env.PORT || 8080;
-const app = express();
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
-const wssData = data => JSON.stringify(data);
-
-const seconds = 10;
-const interval = seconds * 1000;
-
-/**
- * Broadcast helper to send data to all connected clients
- */
-wss.broadcast = (data) => {
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(data);
-    }
-  });
-};
 
 initConfig();
+const isDev = process.env.NODE_ENV === 'development';
+const seconds = 5;
+const interval = seconds * 1000;
+
+const cert = fs.readFileSync(process.env.CERT || `${__dirname}/fixtures/cert.pem`, 'utf-8');
+const key = fs.readFileSync(process.env.KEY || `${__dirname}/fixtures/key.pem`, 'utf-8');
+
+const server = isDev
+  ? http.createServer()
+  : https.createServer({ key, cert, rejectUnauthorized: false });
+
+const io = require('socket.io').listen(server);
 
 /**
  * On connection by client
  */
-wss.on('connection', async (ws) => {
+io.on('connection', async (socket) => {
   const data = await getUsers();
 
-  /**
-   * Send data to this client to init front UI
-   */
-  ws.send(wssData(data));
+  socket.emit('leaderboard', data);
 });
 
 /**
- * Fetch all users at start of app
+ * Every `ìnterval`, we send stringified data to all clients
  */
-getUsers()
-  .then((data) => {
-    /**
-     * Instantly broadcast it to all users
-     */
-    wss.broadcast(wssData(data));
+setInterval(() => {
+  getUsers()
+    .then((data) => {
+      /**
+       * Instantly broadcast it to all users
+       */
+      io.sockets.emit('leaderboard', data);
+    })
+    .catch((err) => {
+      console.error('Error at polling', err);
+    });
+}, interval);
 
-    /**
-     * Every `ìnterval`, we send stringified data to all clients
-     */
-    setInterval(() => {
-      wss.broadcast(wssData(data));
-    }, interval);
-  })
-  .catch((err) => {
-    console.error('Error at polling', err);
-  });
-
-server.listen(port, () => console.log(`Server start at port ${port}`));
+server.listen(8080);
+console.log('Websocket server is alive');
