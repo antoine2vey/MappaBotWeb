@@ -4,12 +4,16 @@ const getDatabaseInstance = async () => await MongoClient.connect(process.env.BA
 
 const getUsers = async () => {
   const db = await getDatabaseInstance();
-  return await db
+  const data = await db
     .collection('users')
     .find()
     .sort({ kebabs: -1 })
     .project({ username: 1, kebabs: 1 })
     .toArray();
+
+  db.close();
+
+  return data;
 };
 
 module.exports = { getDatabaseInstance, getUsers };
