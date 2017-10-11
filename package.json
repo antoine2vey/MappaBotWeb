@@ -1,6 +1,6 @@
 {
   "name": "mappabot_web",
-  "version": "v0.0.3",
+  "version": "v0.0.4",
   "private": true,
   "dependencies": {
     "dotenv": "^4.0.0",
