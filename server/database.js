@@ -8,7 +8,7 @@ const getUsers = async () => {
     .collection('users')
     .find()
     .sort({ kebabs: -1 })
-    .project({ username: 1, kebabs: 1 })
+    .project({ username: 1, kebabs: 1, firstCount: 1, userId: 1 })
     .toArray();
 
   db.close();

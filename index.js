@@ -32,6 +32,11 @@ io.on('connection', async (socket) => {
  * Every `ìnterval`, we send stringified data to all clients
  */
 setInterval(() => {
+  // If no clients connected, we skip db call
+  if (io.eio.clientsCount === 0) {
+    return;
+  }
+
   getUsers()
     .then((data) => {
       /**

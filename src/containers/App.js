@@ -6,7 +6,7 @@ import Button from '../components/Button';
 import Footer from '../components/Footer';
 import CursorPanel from '../components/CursorPanel';
 import StatsPanel from '../components/StatsPanel';
-import { addListener, toggleLeaderboard } from '../actions';
+import { addListener, toggleLeaderboard, toggleZone } from '../actions';
 
 class App extends Component {
   componentDidMount() {
@@ -54,9 +54,10 @@ const Layout = styled.div`
   transition: ${props => props.shouldPan && 'all 0.3s cubic-bezier(0.38, 0.59, 0, 2.5)'};
 `;
 
-const mapStateToProps = ({ leaderboard }) => ({
-  leaderboard: leaderboard.users,
-  shown: leaderboard.shown,
+const mapStateToProps = ({ leaderboard: { users, shown, zone } }) => ({
+  users,
+  shown,
+  zone,
 });
 
-export default connect(mapStateToProps, { addListener, toggleLeaderboard })(App);
+export default connect(mapStateToProps, { addListener, toggleLeaderboard, toggleZone })(App);

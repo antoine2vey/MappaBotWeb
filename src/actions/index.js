@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 import io from 'socket.io-client';
-import { RECEIVE_USERS, TOGGLE_LEADERBOARD } from '../actionTypes';
+import { RECEIVE_USERS, TOGGLE_LEADERBOARD, TOGGLE_LEADERBOARD_ZONE } from '../actionTypes';
 
 let ws;
 // eslint-disable-next-line
@@ -15,6 +15,11 @@ export const fetchUsers = users => ({
 
 export const toggleLeaderboard = () => ({
   type: TOGGLE_LEADERBOARD,
+});
+
+export const toggleZone = zone => ({
+  type: TOGGLE_LEADERBOARD_ZONE,
+  zone,
 });
 
 export const addListener = (wsEvent, action) => (dispatch) => {

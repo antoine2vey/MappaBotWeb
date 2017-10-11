@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux';
-import { RECEIVE_USERS, TOGGLE_LEADERBOARD } from '../actionTypes';
+import { RECEIVE_USERS, TOGGLE_LEADERBOARD, TOGGLE_LEADERBOARD_ZONE } from '../actionTypes';
 
 const initialState = {
   users: [],
   shown: false,
+  zone: 'kebab',
 };
 
 const leaderboard = (state = initialState, action) => {
@@ -17,6 +18,11 @@ const leaderboard = (state = initialState, action) => {
       return {
         ...state,
         shown: !state.shown,
+      };
+    case TOGGLE_LEADERBOARD_ZONE:
+      return {
+        ...state,
+        zone: action.zone,
       };
     default:
       return state;
