@@ -1,57 +1,72 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Leaderboard = ({ ...props }) => (
-  <Board>
-    <Title>Leaderboard</Title>
-    <Players>
-      {props.leaderboard
-        .filter(u => u.username)
-        .filter(u => u.kebabs)
-        .map((user, i) => {
-          switch (i) {
-            case 0:
-              return (
-                <Player first key={user._id}>
-                  {user.username} - <Kebabs>{user.kebabs} kebabs</Kebabs>
-                </Player>
-              );
-            case 1:
-              return (
-                <Player second key={user._id}>
-                  {user.username} - <Kebabs>{user.kebabs} kebabs</Kebabs>
-                </Player>
-              );
-            case 2:
-              return (
-                <Player third key={user._id}>
-                  {user.username} - <Kebabs>{user.kebabs} kebabs</Kebabs>
-                </Player>
-              );
-            default:
-              return (
-                <Player key={user._id}>
-                  {user.username} - <Kebabs>{user.kebabs} kebabs</Kebabs>
-                </Player>
-              );
-          }
-        })}
-    </Players>
-  </Board>
-);
+const Leaderboard = ({ ...props }) => {
+  const isKebab = zone => zone === 'kebab';
+  const isFirst = zone => zone === 'first';
+
+  return (
+    <Board>
+      <LeaderboardHeading>
+        <Title
+          active={isKebab(props.zone)}
+          onClick={() => props.toggleZone('kebab')}
+        >
+          Leaderboard
+        </Title>
+        <Title
+          active={isFirst(props.zone)}
+          onClick={() => props.toggleZone('first')}
+        >
+          Firsts
+        </Title>
+      </LeaderboardHeading>
+      <Players>
+        {props.users
+          .filter(u => u.username)
+          .filter(u => (isKebab(props.zone) ? u.kebabs : true)) // filter if kebab mode
+          .filter(u => (isFirst(props.zone) ? u.firstCount >= 1 : true)) // filter if first mode
+          .sort((a, b) => (isFirst(props.zone) ? true : (b.firstCount - a.firstCount)))
+          .map((user, i) => (
+            <Player
+              first={i === 0}
+              second={i === 1}
+              third={i === 2}
+              key={user._id}
+            >
+              {user.username} - {' '}
+              <Units>
+                {isKebab(props.zone) ? user.kebabs : user.firstCount}
+                {isKebab(props.zone) ? ' kebabs' : ' firsts'}
+              </Units>
+            </Player>
+          ))}
+      </Players>
+    </Board>
+  );
+};
+
+const LeaderboardHeading = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-bottom: 0.33px solid #93f9b9;
+`;
 
 const Title = styled.h2`
   font-family: Oswald, sans-serif;
   text-transform: uppercase;
   color: #fff;
-  text-shadow: 1px 3px #93f9b9;
+  text-shadow: 1.33px 1px #93f9b9;
   font-weight: 400;
-  font-size: 2em;
+  font-size: 1.3em;
   letter-spacing: 2px;
   text-align: center;
   padding: 20px 0;
   margin: 0;
-  border-bottom: 0.33px solid #93f9b9;
+  opacity: ${props => !props.active && 0.4};
+  cursor: pointer;
+  transition: all .1s ease-in;
 `;
 
 const margin = 35;
@@ -83,7 +98,7 @@ const Board = styled.div`
 const Player = styled.p`
   color: white;
   font-weight: 300;
-  ${props => props.first && 'background-color: #60b698'} 
+  ${props => props.first && 'background-color: #60b698'}
   ${props => props.second && 'background-color: #4aab89'}
   ${props => props.third && 'background-color: #33a17a;'};
   padding: 20px;
@@ -95,6 +110,8 @@ const Players = styled.div`
   overflow: scroll;
 `;
 
-const Kebabs = styled.span`font-weight: bold;`;
+const Units = styled.span`
+  font-weight: bold;
+`;
 
 export default Leaderboard;
