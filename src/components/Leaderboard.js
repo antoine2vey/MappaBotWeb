@@ -26,7 +26,10 @@ const Leaderboard = ({ ...props }) => {
           .filter(u => u.username)
           .filter(u => (isKebab(props.zone) ? u.kebabs : true)) // filter if kebab mode
           .filter(u => (isFirst(props.zone) ? u.firstCount >= 1 : true)) // filter if first mode
-          .sort((a, b) => (isFirst(props.zone) ? true : (b.firstCount - a.firstCount)))
+          .sort(
+            (a, b) =>
+              (isFirst(props.zone) ? b.firstCount - a.firstCount : b.kebabs - a.kebabs),
+          )
           .map((user, i) => (
             <Player
               first={i === 0}
@@ -66,7 +69,7 @@ const Title = styled.h2`
   margin: 0;
   opacity: ${props => !props.active && 0.4};
   cursor: pointer;
-  transition: all .1s ease-in;
+  transition: all 0.1s ease-in;
 `;
 
 const margin = 35;
@@ -98,9 +101,9 @@ const Board = styled.div`
 const Player = styled.p`
   color: white;
   font-weight: 300;
-  ${props => props.first && 'background-color: #60b698'}
-  ${props => props.second && 'background-color: #4aab89'}
-  ${props => props.third && 'background-color: #33a17a;'};
+  ${props => props.first && 'background-color: #60b698'} ${props =>
+  props.second && 'background-color: #4aab89'} ${props =>
+  props.third && 'background-color: #33a17a;'};
   padding: 20px;
   margin: 0;
 `;
