@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { responsiveStateReducer as browser } from 'redux-responsive';
 import { RECEIVE_USERS, TOGGLE_LEADERBOARD, TOGGLE_LEADERBOARD_ZONE } from '../actionTypes';
 
 const initialState = {
@@ -31,6 +32,7 @@ const leaderboard = (state = initialState, action) => {
 
 const rootReducer = combineReducers({
   leaderboard,
+  browser,
 });
 
 export default rootReducer;
