@@ -14,14 +14,21 @@ class App extends Component {
   }
 
   render() {
+    const { shown, isMedium, toggleLeaderboard } = this.props;
     return (
       <div>
-        <Layout shouldPan={this.props.shown}>
-          <Heading name="mappa bot" />
+        <Layout shouldPan={shown}>
+          <Heading
+            name="mappa bot"
+            shouldResize={isMedium}
+          />
           <Button link="https://discordapp.com/api/oauth2/authorize?client_id=336909405981376524&scope=bot&permissions=0">
             Installer sur ton serveur Discord !
           </Button>
-          <CursorPanel onStatsClick={this.props.toggleLeaderboard} />
+          <CursorPanel
+            onStatsClick={toggleLeaderboard}
+            shouldBreak={isMedium}
+          />
           <Footer />
         </Layout>
 
@@ -54,10 +61,14 @@ const Layout = styled.div`
   transition: ${props => props.shouldPan && 'all 0.3s cubic-bezier(0.38, 0.59, 0, 2.5)'};
 `;
 
-const mapStateToProps = ({ leaderboard: { users, shown, zone } }) => ({
+const mapStateToProps = ({
+  leaderboard: { users, shown, zone },
+  browser,
+}) => ({
   users,
   shown,
   zone,
+  isMedium: browser.lessThan.medium,
 });
 
 export default connect(mapStateToProps, { addListener, toggleLeaderboard, toggleZone })(App);

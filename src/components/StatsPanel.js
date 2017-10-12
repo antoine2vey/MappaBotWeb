@@ -7,7 +7,7 @@ const Stats = styled.div`
   background-color: #fff;
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   height: 100vh;
-  width: 380px;
+  width: ${props => (props.shouldBreak ? 'calc(100vw - 60px)' : '380px')};
   top: 0;
   position: absolute;
   left: 0;
@@ -33,7 +33,7 @@ const StatsPanel = ({ ...props }) => (
     transitionLeave
     transitionLeaveTimeout={100}
   >
-    <Stats>
+    <Stats shouldBreak={props.isMedium}>
       <Leaderboard {...props} />
     </Stats>
     <Background onClick={props.toggleLeaderboard} />
