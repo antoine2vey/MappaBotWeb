@@ -2,7 +2,7 @@
   "name": "mappabot_web",
   "version": "v0.0.5",
   "private": true,
-i  "dependencies": {
+  "dependencies": {
     "dotenv": "^4.0.0",
     "express": "^4.16.1",
     "mongodb": "^2.2.31",
